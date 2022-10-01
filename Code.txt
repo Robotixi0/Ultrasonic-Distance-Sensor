@@ -1,0 +1,68 @@
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+
+#define SCREEN_WIDTH 128 // OLED display width, in pixels
+#define SCREEN_HEIGHT 64 // OLED display height, in pixels
+
+// Declaration for an SSD1306 display connected to I2C (SDA, SCL pins)
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
+
+
+#define trigpin 10
+#define echopin 11
+
+
+
+int dist;
+int durat;
+
+
+
+void setup() 
+{
+
+  if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) { // Address 0x3D for 128x64
+    Serial.println(F("SSD1306 allocation failed"));
+    for(;;);
+  }
+  delay(2000);
+  display.clearDisplay();
+pinMode(trigpin,OUTPUT);
+pinMode(echopin,INPUT);
+pinMode(5,OUTPUT);
+Serial.begin(115200);
+}
+
+void loop() 
+{
+   display.clearDisplay();
+  
+digitalWrite(trigpin,LOW);
+delay(2);
+digitalWrite(trigpin,HIGH);
+delay(10);
+digitalWrite(trigpin,LOW);
+
+durat=pulseIn(echopin,HIGH); 
+
+dist = durat * 0.0342/2;
+
+Serial.print("Distance=");
+
+ Serial.println(dist);
+
+  display.setTextSize(1);
+  display.setTextColor(WHITE);
+  display.setCursor(32, 10);
+  // Display static text
+  display.println("Distance ");
+  display.setTextSize(2);
+  display.setTextColor(WHITE);
+  display.setCursor(32,30);
+  display.print(dist);
+  display.println("cm");
+  display.display(); 
+ 
+
+}
